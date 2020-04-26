@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="78f75c33-9d0b-41a0-97f7-7c73b2c4b3cb" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.rspec" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.rubocop.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.ruby-gemset" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.ruby-version" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.travis.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CODE_OF_CONDUCT.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Gemfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/LICENSE.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Rakefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/alfresco-rails.gemspec" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bin/console" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bin/setup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/alfresco/rails.rb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/alfresco/rails/version.rb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spec/alfresco/rails_spec.rb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spec/spec_helper.rb" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1b3RhtYFeZBc3970DoOwlEREnNJ" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+  </component>
+  <component name="SpringUtil" SPRING_PRE_LOADER_OPTION="true" RAKE_SPRING_PRE_LOADER_OPTION="true" RAILS_SPRING_PRE_LOADER_OPTION="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="78f75c33-9d0b-41a0-97f7-7c73b2c4b3cb" name="Default Changelist" comment="" />
+      <created>1587858912574</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1587858912574</updated>
+      <workItem from="1587858913766" duration="615000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="1866" height="276" key="GridCell.Tab.0.bottom" timestamp="1587859505834">
+      <screen x="3360" y="23" width="1920" height="1057" />
+    </state>
+    <state width="1866" height="276" key="GridCell.Tab.0.bottom/3360.23.1920.1057/1440.23.1920.1057/0.23.1440.877@3360.23.1920.1057" timestamp="1587859505834" />
+    <state width="1866" height="276" key="GridCell.Tab.0.center" timestamp="1587859505833">
+      <screen x="3360" y="23" width="1920" height="1057" />
+    </state>
+    <state width="1866" height="276" key="GridCell.Tab.0.center/3360.23.1920.1057/1440.23.1920.1057/0.23.1440.877@3360.23.1920.1057" timestamp="1587859505833" />
+    <state width="1866" height="276" key="GridCell.Tab.0.left" timestamp="1587859505832">
+      <screen x="3360" y="23" width="1920" height="1057" />
+    </state>
+    <state width="1866" height="276" key="GridCell.Tab.0.left/3360.23.1920.1057/1440.23.1920.1057/0.23.1440.877@3360.23.1920.1057" timestamp="1587859505832" />
+    <state width="1866" height="276" key="GridCell.Tab.0.right" timestamp="1587859505833">
+      <screen x="3360" y="23" width="1920" height="1057" />
+    </state>
+    <state width="1866" height="276" key="GridCell.Tab.0.right/3360.23.1920.1057/1440.23.1920.1057/0.23.1440.877@3360.23.1920.1057" timestamp="1587859505833" />
+  </component>
+</project>
