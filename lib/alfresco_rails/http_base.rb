@@ -2,13 +2,18 @@
 require 'rest-client'
 
 module AlfrescoRails
-  class Base
-    attr_accessor :url_alfresco, :url_alfresco_error, :url_service, :user, :password, :payload, :request, :response, :response_error
+  # Class HttpBase
+  #   http_base = AlfrescoRails::HttpBase.new(url_alfresco: 'http://url_alfresco', user: 'user', password: 'password')
+  #
+  #   http_base.config_url_service(path: nil, query: nil, fragment: nil)
+  class HttpBase
+    attr_accessor :uri, :url_alfresco, :url_alfresco_error, :url_service,
+                  :user, :password, :payload, :request, :response, :response_error
 
     def initialize(url_alfresco:, user:, password:)
-      uri           = URI.parse(url_alfresco.to_s)
-      @url_alfresco = url_alfresco
-      if uri.kind_of?(URI::HTTP) or uri.kind_of?(URI::HTTPS)
+      @uri          = URI(url_alfresco.to_s)
+      @url_alfresco = @uri.to_s
+      if uri.kind_of?(URI::HTTP) || uri.kind_of?(URI::HTTPS)
         @url_alfresco_error = nil
       else
         @url_alfresco_error = @url_alfresco
@@ -22,11 +27,20 @@ module AlfrescoRails
       @response_error = nil
     end
 
-    def config_url_service(url_service)
+    # Config path, query and fragment from uri
+    #
+    # @param [path?] '/path'
+    # @param [query?] '?query'
+    # @param [fragment?] '#fragment'
+    # @return [self] self
+    def config_url_service(path: nil, query: nil, fragment: nil)
       return self unless @url_alfresco_error.nil?
 
-      url_service  = url_service.split('/').reject(&:empty?).join('/')
-      @url_service = "#{@url_alfresco}/#{url_service}"
+      @uri.path     = '/' + path.split('/').reject(&:empty?).join('/') if path
+      @uri.query    = query if query
+      @uri.fragment = fragment if fragment
+
+      @url_service = @uri.to_s
       @request     = RestClient::Resource.new @url_service, @user, @password
 
       self
