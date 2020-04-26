@@ -9,11 +9,11 @@ RSpec.describe AlfrescoRails::HttpBase do
 
   it 'construct without valid url_alfresco' do
     base = AlfrescoRails::HttpBase.new(url_alfresco: 'url_alfresco', user: 'user', password: 'password')
-    expect(base).to have_attributes(url_alfresco_error: base.url_alfresco)
+    expect(base).to have_attributes(http_base_errors: ["url_alfresco: #{base.url_alfresco}"])
   end
 
   it 'construct with valid url_alfresco' do
-    expect(http_base).to have_attributes(url_alfresco_error: nil)
+    expect(http_base).to have_attributes(http_base_errors: [])
   end
 
   it 'config_url_service: config path' do
@@ -32,5 +32,12 @@ RSpec.describe AlfrescoRails::HttpBase do
     http_base.config_url_service(fragment: 'time=1305298413')
 
     expect(http_base.uri.to_s).to eq(http_base.url_service)
+  end
+
+  it 'config_payload: config payload hash' do
+    payload = { username: 'username', password: 'password' }
+    http_base.config_payload(payload)
+
+    expect(http_base.payload).to have_attributes(**payload)
   end
 end

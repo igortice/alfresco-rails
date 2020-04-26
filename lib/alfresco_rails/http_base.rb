@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require 'rest-client'
+require 'ostruct'
 
 module AlfrescoRails
   # Class HttpBase
@@ -7,34 +8,32 @@ module AlfrescoRails
   #
   #   http_base.config_url_service(path: nil, query: nil, fragment: nil)
   class HttpBase
-    attr_accessor :uri, :url_alfresco, :url_alfresco_error, :url_service,
+    attr_accessor :uri, :url_alfresco, :http_base_errors, :url_service,
                   :user, :password, :payload, :request, :response, :response_error
 
     def initialize(url_alfresco:, user:, password:)
-      @uri          = URI(url_alfresco.to_s)
-      @url_alfresco = @uri.to_s
-      if uri.kind_of?(URI::HTTP) || uri.kind_of?(URI::HTTPS)
-        @url_alfresco_error = nil
-      else
-        @url_alfresco_error = @url_alfresco
-      end
-      @url_service    = nil
-      @user           = user.to_s
-      @password       = password
-      @payload        = nil
-      @request        = nil
-      @response       = nil
-      @response_error = nil
+      @uri              = URI(url_alfresco.to_s)
+      @url_alfresco     = @uri.to_s
+      @http_base_errors = []
+      @url_service      = nil
+      @user             = user.to_s
+      @password         = password
+      @payload          = nil
+      @request          = nil
+      @response         = nil
+      @response_error   = nil
+
+      @http_base_errors << "url_alfresco: #{@url_alfresco}" unless @uri.kind_of?(URI::HTTP) || @uri.kind_of?(URI::HTTPS)
     end
 
     # Config path, query and fragment from uri
     #
-    # @param [path?] '/path'
-    # @param [query?] '?query'
-    # @param [fragment?] '#fragment'
-    # @return [self] self
+    # @param [String] 'path'
+    # @param [String] 'query'
+    # @param [String] 'fragment'
+    # @return [HttpBase] self
     def config_url_service(path: nil, query: nil, fragment: nil)
-      return self unless @url_alfresco_error.nil?
+      return self unless @http_base_errors.empty?
 
       @uri.path     = '/' + path.split('/').reject(&:empty?).join('/') if path
       @uri.query    = query if query
@@ -46,8 +45,12 @@ module AlfrescoRails
       self
     end
 
+    # Config payload
+    #
+    # @param [Hash] 'payload'
+    # @return [HttpBase] self
     def config_payload(payload)
-      return self unless @url_alfresco_error.nil?
+      return self unless @http_base_errors.empty?
 
       @payload = OpenStruct.new(payload)
 
@@ -55,7 +58,7 @@ module AlfrescoRails
     end
 
     def send_request_get
-      return self unless @url_alfresco_error.nil?
+      return self unless @http_base_errors.empty?
 
       @response_error = nil
       @response       = @request.get
@@ -64,7 +67,7 @@ module AlfrescoRails
     end
 
     def send_request_post
-      return self unless @url_alfresco_error.nil?
+      return self unless @http_base_errors.empty?
 
       @response_error = nil
       @response       = @request.post(@payload.marshal_dump)
@@ -73,7 +76,7 @@ module AlfrescoRails
     end
 
     def send_request_post_json
-      return self unless @url_alfresco_error.nil?
+      return self unless @http_base_errors.empty?
 
       @response_error = nil
       @response       = @request.post(@payload.marshal_dump.to_json, content_type: :json)
@@ -82,7 +85,7 @@ module AlfrescoRails
     end
 
     def send_request_delete
-      return self unless @url_alfresco_error.nil?
+      return self unless @http_base_errors.empty?
 
       @response_error = nil
       @response       = @request.delete
@@ -91,25 +94,25 @@ module AlfrescoRails
     end
 
     def get_response
-      return self unless @url_alfresco_error.nil?
+      return self unless @http_base_errors.empty?
 
       @response
     end
 
     def get_response_json
-      return self unless @url_alfresco_error.nil?
+      return self unless @http_base_errors.empty?
 
       @response = JSON.parse(@response, symbolize_names: true)
     end
 
     def get_response_object
-      return self unless @url_alfresco_error.nil?
+      return self unless @http_base_errors.empty?
 
       @response = JSON.parse(@response, object_class: OpenStruct)
     end
 
     def begin_rescue(accessors = [])
-      throw("url alfresco invalid: #{@url_alfresco_error}") unless @url_alfresco_error.nil?
+      throw(@http_base_errors) unless @http_base_errors.empty?
 
       yield
     rescue RestClient::ExceptionWithResponse => e_rc
