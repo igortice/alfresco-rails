@@ -4,7 +4,7 @@ require_relative 'lib/alfresco/rails/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'alfresco-rails'
-  spec.version       = Alfresco::Rails::VERSION
+  spec.version       = AlfrescoRails::VERSION
   spec.authors       = ['Igor Rocha']
   spec.email         = ['igortice@gmail.com']
 
