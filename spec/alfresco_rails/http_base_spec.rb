@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 RSpec.describe AlfrescoRails::HttpBase do
-  let(:http_base) { AlfrescoRails::HttpBase.new(url_alfresco: 'http://url_alfresco', user: 'user', password: 'password') }
+  let(:http_base) { described_class.new(url_alfresco: 'http://url_alfresco', user: 'user', password: 'password') }
 
   it 'construct required: url_alfresco, user, password' do
-    expect { AlfrescoRails::HttpBase.new }.to raise_error('missing keywords: url_alfresco, user, password')
+    expect { described_class.new }.to raise_error('missing keywords: url_alfresco, user, password')
   end
 
   it 'construct without valid url_alfresco' do
-    base = AlfrescoRails::HttpBase.new(url_alfresco: 'url_alfresco', user: 'user', password: 'password')
+    base = described_class.new(url_alfresco: 'url_alfresco', user: 'user', password: 'password')
     expect(base).to have_attributes(http_base_errors: ["url_alfresco: #{base.url_alfresco}"])
   end
 

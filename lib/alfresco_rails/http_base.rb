@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rest-client'
 require 'ostruct'
 
@@ -7,6 +8,7 @@ module AlfrescoRails
   #   http_base = AlfrescoRails::HttpBase.new(url_alfresco: 'http://url_alfresco', user: 'user', password: 'password')
   #
   #   http_base.config_url_service(path: nil, query: nil, fragment: nil)
+  #   http_base.config_payload({key: 'value'})
   class HttpBase
     attr_accessor :uri, :url_alfresco, :http_base_errors, :url_service,
                   :user, :password, :payload, :request, :response, :response_error
@@ -23,7 +25,7 @@ module AlfrescoRails
       @response         = nil
       @response_error   = nil
 
-      @http_base_errors << "url_alfresco: #{@url_alfresco}" unless @uri.kind_of?(URI::HTTP) || @uri.kind_of?(URI::HTTPS)
+      @http_base_errors << "url_alfresco: #{@url_alfresco}" unless @uri.is_a?(URI::HTTP) || @uri.is_a?(URI::HTTPS)
     end
 
     # Config path, query and fragment from uri
@@ -93,19 +95,19 @@ module AlfrescoRails
       self
     end
 
-    def get_response
+    def obtain_response
       return self unless @http_base_errors.empty?
 
       @response
     end
 
-    def get_response_json
+    def obtain_response_json
       return self unless @http_base_errors.empty?
 
       @response = JSON.parse(@response, symbolize_names: true)
     end
 
-    def get_response_object
+    def obtain_response_object
       return self unless @http_base_errors.empty?
 
       @response = JSON.parse(@response, object_class: OpenStruct)
@@ -115,19 +117,19 @@ module AlfrescoRails
       throw(@http_base_errors) unless @http_base_errors.empty?
 
       yield
-    rescue RestClient::ExceptionWithResponse => e_rc
+    rescue RestClient::ExceptionWithResponse => e
       begin
-        @response_error = JSON.parse(e_rc.response, object_class: OpenStruct)
+        @response_error = JSON.parse(e.response, object_class: OpenStruct)
       rescue JSON::ParserError
-        @response_error = OpenStruct.new({ status: { code: e_rc.http_code, name: e_rc.to_s, description: e_rc.response.body } })
+        @response_error = OpenStruct.new({ status: { code: e.http_code, name: e.to_s, description: e.response.body } })
       end
-      accessors.each { |var| self.instance_variable_set(var, nil) }
+      accessors.each { |var| instance_variable_set(var, nil) }
       @response = nil
 
       false
-    rescue => e
+    rescue StandardError => e
       @response_error = OpenStruct.new({ status: { code: 500, name: 'Internal Server Error', description: e.message } })
-      accessors.each { |var| self.instance_variable_set(var, nil) }
+      accessors.each { |var| instance_variable_set(var, nil) }
       @response = nil
 
       false
