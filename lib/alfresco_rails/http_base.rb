@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 require 'rest-client'
-require 'ostruct'
+require 'recursive-open-struct'
+require 'json'
 
 module AlfrescoRails
   # Class HttpBase
@@ -54,21 +55,23 @@ module AlfrescoRails
     def config_payload(payload)
       return self unless @http_base_errors.empty?
 
-      @payload = OpenStruct.new(payload)
+      @payload = RecursiveOpenStruct.new(payload)
 
       self
     end
 
-    def send_request_get
-      return self unless @http_base_errors.empty?
+    # Process Request Get
+    #
+    # @return [HttpBase] self
+    def process_request_get
+      config_url_service if @url_service.nil?
 
-      @response_error = nil
-      @response       = @request.get
+      begin_rescue { @response = @request.get }
 
       self
     end
 
-    def send_request_post
+    def process_request_post
       return self unless @http_base_errors.empty?
 
       @response_error = nil
@@ -77,7 +80,7 @@ module AlfrescoRails
       self
     end
 
-    def send_request_post_json
+    def process_request_post_json
       return self unless @http_base_errors.empty?
 
       @response_error = nil
@@ -86,7 +89,7 @@ module AlfrescoRails
       self
     end
 
-    def send_request_delete
+    def process_request_delete
       return self unless @http_base_errors.empty?
 
       @response_error = nil
@@ -110,29 +113,27 @@ module AlfrescoRails
     def obtain_response_object
       return self unless @http_base_errors.empty?
 
-      @response = JSON.parse(@response, object_class: OpenStruct)
+      @response = JSON.parse(@response, object_class: RecursiveOpenStruct)
     end
 
-    def begin_rescue(accessors = [])
+    def begin_rescue
+      @response       = nil
+      @response_error = nil
+
       throw(@http_base_errors) unless @http_base_errors.empty?
 
       yield
     rescue RestClient::ExceptionWithResponse => e
       begin
-        @response_error = JSON.parse(e.response, object_class: OpenStruct)
+        @response_error =
+          JSON.parse(e.response, object_class: RecursiveOpenStruct)
       rescue JSON::ParserError
-        @response_error = OpenStruct.new({ status: { code: e.http_code, name: e.to_s, description: e.response.body } })
+        @response_error =
+          RecursiveOpenStruct.new({ status: { code: e.http_code, name: e.to_s, description: e.response.body } })
       end
-      accessors.each { |var| instance_variable_set(var, nil) }
-      @response = nil
-
-      false
     rescue StandardError => e
-      @response_error = OpenStruct.new({ status: { code: 500, name: 'Internal Server Error', description: e.message } })
-      accessors.each { |var| instance_variable_set(var, nil) }
-      @response = nil
-
-      false
+      @response_error =
+        RecursiveOpenStruct.new({ status: { code: 500, name: 'Internal Server Error', description: e.message } })
     end
   end
 end

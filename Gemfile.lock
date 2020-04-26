@@ -18,6 +18,7 @@ GEM
       ast (~> 2.4.0)
     rainbow (3.0.0)
     rake (12.3.3)
+    recursive-open-struct (1.1.1)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
       http-cookie (>= 1.0.2, < 2.0)
@@ -60,6 +61,7 @@ PLATFORMS
 
 DEPENDENCIES
   rake (~> 12.0)
+  recursive-open-struct
   rest-client
   rspec (~> 3.0)
   rubocop
