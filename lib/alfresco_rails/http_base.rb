@@ -20,7 +20,7 @@ module AlfrescoRails
       @http_base_errors = []
       @url_service      = nil
       @user             = user.to_s
-      @password         = password
+      @password         = password.to_s
       @payload          = nil
       @request          = nil
       @response         = nil
@@ -64,27 +64,36 @@ module AlfrescoRails
     #
     # @return [HttpBase] self
     def process_request_get
-      config_url_service if @url_service.nil?
-
-      begin_rescue { @response = @request.get }
+      begin_rescue do
+        config_url_service if @url_service.nil?
+        @response = @request.get
+      end
 
       self
     end
 
+    # Process Request Post
+    #
+    # @return [HttpBase] self
     def process_request_post
-      return self unless @http_base_errors.empty?
-
-      @response_error = nil
-      @response       = @request.post(@payload.marshal_dump)
+      begin_rescue do
+        config_url_service if @url_service.nil?
+        config_payload({}) if payload.nil?
+        @response = @request.post(@payload.marshal_dump.to_json, content_type: :json)
+      end
 
       self
     end
 
+    # Process Request Post Json
+    #
+    # @return [HttpBase] self
     def process_request_post_json
-      return self unless @http_base_errors.empty?
-
-      @response_error = nil
-      @response       = @request.post(@payload.marshal_dump.to_json, content_type: :json)
+      begin_rescue do
+        config_url_service if @url_service.nil?
+        config_payload({}) if payload.nil?
+        @response = @request.post(@payload.marshal_dump.to_json, content_type: :json)
+      end
 
       self
     end
@@ -110,30 +119,29 @@ module AlfrescoRails
       @response = JSON.parse(@response, symbolize_names: true)
     end
 
+    # Obtain Response Object
+    #
+    # @return [Boolean|RecursiveOpenStruct] false|@response
     def obtain_response_object
-      return self unless @http_base_errors.empty?
+      return false unless @response_error.nil?
 
-      @response = JSON.parse(@response, object_class: RecursiveOpenStruct)
+      begin_rescue do
+        code      = @response.code
+        body      = JSON.parse(@response, symbolize_names: true, object_class: RecursiveOpenStruct)
+        @response = RecursiveOpenStruct.new({ code: code, body: body })
+      end
     end
 
     def begin_rescue
-      @response       = nil
-      @response_error = nil
-
       throw(@http_base_errors) unless @http_base_errors.empty?
 
       yield
     rescue RestClient::ExceptionWithResponse => e
-      begin
-        @response_error =
-          JSON.parse(e.response, object_class: RecursiveOpenStruct)
-      rescue JSON::ParserError
-        @response_error =
-          RecursiveOpenStruct.new({ status: { code: e.http_code, name: e.to_s, description: e.response.body } })
-      end
+      @response_error =
+        RecursiveOpenStruct.new({ code: e.response.code, name: e.to_s, description: e.response.body })
     rescue StandardError => e
       @response_error =
-        RecursiveOpenStruct.new({ status: { code: 500, name: 'Internal Server Error', description: e.message } })
+        RecursiveOpenStruct.new({ code: 500, name: '500 Internal Server Error', description: e.message })
     end
   end
 end

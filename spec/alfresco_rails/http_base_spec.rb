@@ -2,6 +2,9 @@
 
 RSpec.describe AlfrescoRails::HttpBase do
   let(:http_base) { described_class.new(url_alfresco: 'http://url_alfresco', user: 'user', password: 'password') }
+  let(:http_base_postman) do
+    described_class.new(url_alfresco: 'https://postman-echo.com', user: 'user', password: 'password')
+  end
 
   context 'when constructor' do
     it 'required: url_alfresco, user, password' do
@@ -48,23 +51,77 @@ RSpec.describe AlfrescoRails::HttpBase do
   end
 
   context 'when process_request_get' do
-    let(:http_base_json) do
-      described_class.new(url_alfresco: 'https://jsonplaceholder.typicode.com', user: 'user', password: 'password')
-    end
-
     it 'with status code 500' do
       http_base
+        .config_url_service(path: 'posts')
         .process_request_get
 
-      expect(http_base.response_error.status.code).to eq(500)
+      expect(http_base.response_error.code).to eq(500)
     end
 
     it 'with status code 200' do
-      http_base_json
-        .config_url_service(path: 'users')
+      http_base_postman
+        .config_url_service(path: 'get')
         .process_request_get
 
-      expect(http_base_json.response.code).to eq(200)
+      expect(http_base_postman.response.code).to eq(200)
+    end
+  end
+
+  context 'when process_request_post_json' do
+    it 'with status code 404' do
+      http_base_postman
+        .config_url_service(path: '/posts')
+        .process_request_post_json
+
+      expect(http_base_postman.response_error.code).to eq(404)
+    end
+
+    it 'with status code 200' do
+      http_base_postman
+        .config_url_service(path: '/post')
+        .process_request_post_json
+
+      expect(http_base_postman.response.code).to eq(200)
+    end
+  end
+
+  context 'when obtain_response_object' do
+    let(:http_base_postman_error) { http_base_postman.dup }
+
+    before do
+      http_base_postman
+        .config_url_service(path: '/post')
+        .config_payload({ key: 'value' })
+        .process_request_post_json
+        .obtain_response_object
+    end
+
+    it 'with status result false' do
+      result_error =
+        http_base_postman_error
+        .config_url_service(path: '/posts')
+        .process_request_post_json
+        .obtain_response_object
+
+      expect(result_error).to eq(false)
+    end
+
+    it 'with status code 404' do
+      http_base_postman_error
+        .config_url_service(path: '/posts')
+        .process_request_post_json
+        .obtain_response_object
+
+      expect(http_base_postman_error.response_error.code).to eq(404)
+    end
+
+    it 'with status code 200' do
+      expect(http_base_postman.response.code).to eq(200)
+    end
+
+    it 'with status result object' do
+      expect(http_base_postman.response.body.data.to_hash).to eq({ key: 'value' })
     end
   end
 end
