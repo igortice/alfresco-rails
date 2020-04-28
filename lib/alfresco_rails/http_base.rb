@@ -79,6 +79,7 @@ module AlfrescoRails
       begin_rescue do
         config_url_service if @url_service.nil?
         config_payload({}) if payload.nil?
+
         payload   = @payload.marshal_dump
         @response =
           case content_type
@@ -94,43 +95,24 @@ module AlfrescoRails
       self
     end
 
-    # Process Request Post Json
+    # Process Request Delete
     #
     # @return [HttpBase] self
-    def process_request_post_json
+    def process_request_delete
       begin_rescue do
         config_url_service if @url_service.nil?
         config_payload({}) if payload.nil?
-        @response = @request.post(@payload.marshal_dump.to_json, content_type: :json)
+
+        @response = @request.delete
       end
 
       self
     end
 
-    def process_request_delete
-      return self unless @http_base_errors.empty?
-
-      @response_error = nil
-      @response       = @request.delete
-
-      self
-    end
-
-    def obtain_response
-      return self unless @http_base_errors.empty?
-
-      @response
-    end
-
-    def obtain_response_json
-      return self unless @http_base_errors.empty?
-
-      @response = JSON.parse(@response, symbolize_names: true)
-    end
-
     # Obtain Response Object
     #
-    # @return [Boolean|RecursiveOpenStruct] false|@response
+    # @return [Boolean] false
+    # @return [RecursiveOpenStruct] @response
     def obtain_response_object
       return false unless @response_error.nil?
 
@@ -140,6 +122,8 @@ module AlfrescoRails
         @response = RecursiveOpenStruct.new({ code: code, body: body })
       end
     end
+
+    private
 
     def begin_rescue
       throw(@http_base_errors) unless @http_base_errors.empty?

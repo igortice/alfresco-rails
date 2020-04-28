@@ -68,11 +68,11 @@ RSpec.describe AlfrescoRails::HttpBase do
     end
   end
 
-  context 'when process_request_post_json' do
+  context 'when process_request_post' do
     it 'with status code 404' do
       http_base_postman
         .config_url_service(path: '/posts')
-        .process_request_post_json
+        .process_request_post
 
       expect(http_base_postman.response_error.code).to eq(404)
     end
@@ -80,7 +80,7 @@ RSpec.describe AlfrescoRails::HttpBase do
     it 'with status code 200' do
       http_base_postman
         .config_url_service(path: '/post')
-        .process_request_post_json
+        .process_request_post
 
       expect(http_base_postman.response.code).to eq(200)
     end
@@ -93,7 +93,7 @@ RSpec.describe AlfrescoRails::HttpBase do
       http_base_postman
         .config_url_service(path: '/post')
         .config_payload({ key: 'value' })
-        .process_request_post_json
+        .process_request_post
         .obtain_response_object
     end
 
@@ -101,7 +101,7 @@ RSpec.describe AlfrescoRails::HttpBase do
       result_error =
         http_base_postman_error
         .config_url_service(path: '/posts')
-        .process_request_post_json
+        .process_request_post
         .obtain_response_object
 
       expect(result_error).to eq(false)
@@ -110,7 +110,7 @@ RSpec.describe AlfrescoRails::HttpBase do
     it 'with status code 404' do
       http_base_postman_error
         .config_url_service(path: '/posts')
-        .process_request_post_json
+        .process_request_post
         .obtain_response_object
 
       expect(http_base_postman_error.response_error.code).to eq(404)
