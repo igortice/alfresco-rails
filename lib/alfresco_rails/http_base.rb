@@ -75,11 +75,20 @@ module AlfrescoRails
     # Process Request Post
     #
     # @return [HttpBase] self
-    def process_request_post
+    def process_request_post(content_type: :json)
       begin_rescue do
         config_url_service if @url_service.nil?
         config_payload({}) if payload.nil?
-        @response = @request.post(@payload.marshal_dump.to_json, content_type: :json)
+        payload   = @payload.marshal_dump
+        @response =
+          case content_type
+          when :json
+            @request.post(payload.to_json, content_type: content_type)
+          when :form_data
+            @request.post(payload)
+          else
+            @request.post(payload, content_type: content_type)
+          end
       end
 
       self

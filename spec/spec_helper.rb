@@ -2,6 +2,7 @@
 
 require 'bundler/setup'
 require 'alfresco_rails'
+require 'dotenv'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
@@ -13,4 +14,6 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+
+  Dotenv.load('.env')
 end

@@ -55,6 +55,9 @@ Layout/ClassStructure:
 Layout/TrailingWhitespace:
   AllowInHeredoc: true
 
+Layout/LineLength:
+  Max: 120
+
 Lint/AmbiguousBlockAssociation:
   Exclude:
     - 'spec/**/*.rb'
@@ -100,11 +103,8 @@ Metrics/MethodLength:
 Metrics/AbcSize:
   Max: 20
 
-RSpec/ExampleLength:
+Metrics/ParameterLists:
   Enabled: false
-
-Layout/LineLength:
-  Max: 120
 
 RSpec/FilePath:
   Exclude:
@@ -118,3 +118,6 @@ RSpec/MessageSpies:
 
 RSpec/NestedGroups:
   Max: 7
+
+RSpec/ExampleLength:
+  Enabled: false

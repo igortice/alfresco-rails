@@ -2,8 +2,8 @@
 
 require 'alfresco_rails/version'
 require 'alfresco_rails/http_base'
+require 'alfresco_rails/file'
 
 module AlfrescoRails
   class Error < StandardError; end
-  # Your code goes here...
 end
